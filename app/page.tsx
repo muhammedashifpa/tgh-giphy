@@ -1,65 +1,88 @@
-import Image from "next/image";
+import { SearchBar } from "@/components/SearchBar.client";
+import { GifGridClient } from "@/components/GifGrid.client";
+import { giphyService } from "@/services/giphyService";
+import { IGif } from "@giphy/js-types";
 
-export default function Home() {
+// This sets the default revalidation time for the page (ISR: 30 minutes)
+// Note: In Next.js App Router, accessing searchParams will typically disable full route caching 
+// for that specific request, ensuring search results are fresh.
+export const revalidate = 1800;
+
+interface Gif {
+  id: string;
+  url: string;
+  title: string;
+  user: {
+    name: string;
+    avatar?: string;
+  };
+}
+
+export default async function Home({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string }>;
+}) {
+  const { q: query } = await searchParams;
+  let initialGifs: Gif[] = [];
+  let error = null;
+
+  try {
+    // Fetch initial 20 GIFs on the server
+    const data = query 
+      ? await giphyService.searchGifs(query, 20)
+      : await giphyService.getTrendingGifs(20);
+
+    initialGifs = data.map((gif: IGif) => ({
+      id: gif.id as string,
+      url: gif.images.fixed_width.url,
+      title: gif.title,
+      user: {
+        name: gif.user?.display_name || gif.username || "Anonymous",
+        avatar: gif.user?.avatar_url
+      }
+    }));
+  } catch (err) {
+    console.error("Server Fetch Error:", err);
+    error = "Failed to load GIFs. Please check your API configuration.";
+  }
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+    <div className="min-h-screen p-8 max-w-7xl mx-auto">
+      <header className="mb-12 text-center pt-8">
+        <h1 className="text-5xl font-extrabold mb-4 bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 bg-clip-text text-transparent tracking-tight">
+          Giphy Explorer
+        </h1>
+        <p className="text-zinc-400 text-lg mb-8 max-w-xl mx-auto">
+          Explore the world of GIFs with high-performance search and instant streaming.
+        </p>
+        <SearchBar />
+      </header>
+      
+      <main>
+        {error ? (
+          <div className="text-center py-20 px-4">
+             <div className="inline-flex items-center justify-center p-3 bg-red-500/10 rounded-full mb-4">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 text-red-500">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
+              </svg>
+            </div>
+            <p className="text-red-400 font-medium">{error}</p>
+          </div>
+        ) : (
+          <div className="space-y-8">
+            <h2 className="text-2xl font-bold px-4 text-zinc-100 flex items-center gap-2">
+              <span className="w-2 h-8 bg-purple-600 rounded-full" />
+              {query ? `Search Results for "${query}"` : "Trending Now"}
+            </h2>
+            <GifGridClient initialGifs={initialGifs} query={query} />
+          </div>
+        )}
       </main>
+      
+      <footer className="mt-32 py-12 border-t border-zinc-800 text-center text-zinc-500 text-sm">
+        <p>© {new Date().getFullYear()} Giphy Explorer. Powered by Giphy API.</p>
+      </footer>
     </div>
   );
 }
