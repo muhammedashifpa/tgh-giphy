@@ -11,6 +11,7 @@ export const revalidate = 1800;
 interface Gif {
   id: string;
   url: string;
+  highResUrl: string;
   title: string;
   user: {
     name: string;
@@ -36,6 +37,7 @@ export default async function Home({
     initialGifs = data.map((gif: IGif) => ({
       id: gif.id as string,
       url: gif.images.fixed_width.url,
+      highResUrl: gif.images.original.url,
       title: gif.title,
       user: {
         name: gif.user?.display_name || gif.username || "Anonymous",

@@ -3,9 +3,12 @@
 import  { useState, useEffect, useRef, useCallback } from "react";
 import Image from "next/image";
 
+import { GifModal } from "./GifModal";
+
 interface Gif {
   id: string;
   url: string;
+  highResUrl: string;
   title: string;
   user: {
     name: string;
@@ -23,6 +26,7 @@ export const GifGridClient = ({ initialGifs, query }: GifGridProps) => {
   const [offset, setOffset] = useState(initialGifs.length);
   const [hasMore, setHasMore] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedGif, setSelectedGif] = useState<Gif | null>(null);
   const loaderRef = useRef<HTMLDivElement>(null);
 
   // Reset state when query changes (since initialGifs will be new from server)
@@ -89,6 +93,7 @@ export const GifGridClient = ({ initialGifs, query }: GifGridProps) => {
               <div 
                 key={`${gif.id}-${gifIndex}`} 
                 className="relative group rounded-xl overflow-hidden cursor-pointer bg-zinc-900 shadow-sm hover:shadow-xl transition-shadow duration-300"
+                onClick={() => setSelectedGif(gif)}
               >
                 <Image
                   src={gif.url}
@@ -125,6 +130,13 @@ export const GifGridClient = ({ initialGifs, query }: GifGridProps) => {
           <p className="text-zinc-500 font-medium italic">You've reached the end.</p>
         )}
       </div>
+
+      {selectedGif && (
+        <GifModal 
+          gif={selectedGif} 
+          onClose={() => setSelectedGif(null)} 
+        />
+      )}
     </div>
   );
 };

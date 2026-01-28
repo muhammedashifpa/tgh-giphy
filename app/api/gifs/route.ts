@@ -16,6 +16,7 @@ export async function GET(request: NextRequest) {
     const gifs = data.map((gif: any) => ({
       id: gif.id,
       url: gif.images.fixed_width.url,
+      highResUrl: gif.images.original.url, // High-res version for modal
       title: gif.title,
       user: {
         name: gif.user?.display_name || gif.username || "Anonymous",
