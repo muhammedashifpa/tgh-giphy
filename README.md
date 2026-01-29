@@ -7,6 +7,14 @@ A modern, high-performance GIF search and discovery application built with Next.
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue?style=flat-square&logo=typescript)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind-4.x-38bdf8?style=flat-square&logo=tailwind-css)
 
+## 📚 Documentation
+
+- **[Architecture Guide](docs/ARCHITECTURE.md)** - Design patterns, performance optimizations, and best practices
+- **[API Documentation](docs/API.md)** - Complete API reference, types, and error handling
+- **[Component Reference](docs/COMPONENTS.md)** - Detailed component documentation with examples
+- **[Deployment Guide](docs/DEPLOYMENT.md)** - Deploy to Vercel, Netlify, or Docker
+- **[Documentation Index](docs/INDEX.md)** - Navigate all documentation
+
 ## ✨ Features
 
 - 🔥 **Trending GIFs** - Browse the latest trending GIFs from Giphy
@@ -132,6 +140,10 @@ tgh-giphy/
 - Selected GIF stored in URL (`?gif=abc123`)
 - Enables sharing and deep linking
 
+> 📖 **[Read more about Architecture →](docs/ARCHITECTURE.md)**
+> 
+> For a deep dive into design patterns, performance optimizations, state management strategies, and best practices, see the complete [Architecture Guide](docs/ARCHITECTURE.md).
+
 ## 🔧 API Reference
 
 ### Giphy Service
@@ -206,6 +218,10 @@ Fetches a single GIF by ID.
 curl http://localhost:3000/api/gifs/abc123
 ```
 
+> 📖 **[Read more about the API →](docs/API.md)**
+> 
+> For complete API documentation including type definitions, error handling, caching strategies, and testing guides, see the [API Documentation](docs/API.md).
+
 ## 🎨 Component Guide
 
 ### GifGrid.client.tsx
@@ -250,6 +266,10 @@ All UI components are memoized with `React.memo` for optimal performance:
 - **SearchInput**: Styled search input with icon
 - **Skeleton**: Loading skeleton components
 - **Tag**: Interactive tag buttons
+
+> 📖 **[Read more about Components →](docs/COMPONENTS.md)**
+> 
+> For detailed component documentation including props, state management, usage examples, and accessibility guidelines, see the [Component Documentation](docs/COMPONENTS.md).
 
 ## 🧪 Testing the Loading State
 
