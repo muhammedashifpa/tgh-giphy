@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import { Modal } from "./ui/Modal.client";
+import { Loader } from "./ui/Loader.client";
 import { Gif } from "@/types/gif";
 
 interface GifModalProps {
@@ -13,15 +14,16 @@ interface GifModalProps {
 
 export const GifModal = ({ gif, isLoading, onClose }: GifModalProps) => {
   const [imgLoading, setImgLoading] = useState(true);
-  console.log(gif,"Gif");
+  console.log(isLoading && imgLoading || !gif,"Gif loading state");
 
   return (
     <Modal isOpen={!!(gif || isLoading)} onClose={onClose}>
-      {isLoading &&imgLoading || !gif ? (
-        <div className="flex flex-col items-center justify-center min-h-[500px] bg-zinc-900 gap-4">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500"></div>
-          <p className="text-zinc-500 font-medium">Summoning your GIF...</p>
-        </div>
+      {(isLoading && imgLoading) || !gif ? (
+        <Loader 
+          size="lg" 
+          text="Summoning your GIF..." 
+          className="min-h-[500px] bg-zinc-900 w-full" 
+        />
       ) : (
         <>
           <div className="relative flex-1 bg-zinc-900 flex items-center justify-center overflow-hidden min-h-[400px]">

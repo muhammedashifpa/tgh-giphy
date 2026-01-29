@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import Image from "next/image";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { GifModal } from "./GifModal.client";
+import { Loader } from "./ui/Loader.client";
 import { Gif } from "@/types/gif";
 
 interface GifGridProps {
@@ -91,9 +92,13 @@ export const GifGridClient = ({ initialGifs, query }: GifGridProps) => {
       if (query) url.searchParams.set("q", query);
 
       const res = await fetch(url);
+      if (!res.ok) {
+        throw new Error(`API returned ${res.status}`);
+      }
+      
       const newGifs = await res.json();
 
-      if (newGifs.length === 0) {
+      if (!Array.isArray(newGifs) || newGifs.length === 0) {
         setHasMore(false);
       } else {
         setGifs((prev: Gif[]) => [...prev, ...newGifs]);
@@ -114,7 +119,7 @@ export const GifGridClient = ({ initialGifs, query }: GifGridProps) => {
           loadMore();
         }
       },
-      { threshold: 1.0 }
+      { rootMargin: "200px" }
     );
 
     if (loaderRef.current) {
@@ -132,12 +137,12 @@ export const GifGridClient = ({ initialGifs, query }: GifGridProps) => {
 
   return (
     <div className="space-y-12">
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 px-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 md:gap-4 px-0 md:px-4">
         {columns.map((column, colIndex) => (
-          <div key={`col-${colIndex}`} className="grid gap-4 h-fit">
+          <div key={`col-${colIndex}`} className="grid gap-2 md:gap-4 h-fit">
             {column.map((gif, gifIndex) => (
               <div 
-                key={`${gif.id}`} 
+                key={`${gif.id}-${gifIndex}`} 
                 className="relative group rounded-xl overflow-hidden cursor-pointer bg-zinc-900 shadow-sm hover:shadow-xl transition-shadow duration-300"
                 onClick={() => updateModalUrl(gif.id)}
               >
@@ -152,14 +157,9 @@ export const GifGridClient = ({ initialGifs, query }: GifGridProps) => {
                 {/* Overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
                   <div className="flex items-center justify-between gap-2">
-                    <span className="text-white text-sm font-medium truncate drop-shadow-md">
+                    <span className="text-white text-xs md:text-sm font-medium truncate drop-shadow-md">
                       {gif.title || "Untitled"}
                     </span>
-                    <button className="p-2 bg-white/10 hover:bg-white/20 backdrop-blur-md rounded-full transition-colors flex-shrink-0">
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="white" className="w-4 h-4">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
-                      </svg>
-                    </button>
                   </div>
                 </div>
               </div>
@@ -170,7 +170,7 @@ export const GifGridClient = ({ initialGifs, query }: GifGridProps) => {
 
       <div ref={loaderRef} className="py-12 flex justify-center">
         {isLoading && (
-          <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-purple-500"></div>
+          <Loader size="md" />
         )}
         {!hasMore && gifs.length > 0 && (
           <p className="text-zinc-500 font-medium italic">You've reached the end.</p>

@@ -31,14 +31,14 @@ export default async function Home({
   }
 
   return (
-    <div className="min-h-screen p-8 max-w-7xl mx-auto">
+    <div className="min-h-screen p-4 md:p-8 max-w-7xl mx-auto">
       <header className="mb-12 text-center pt-8">
         <Link href="/" className="inline-block group">
-          <h1 className="text-5xl font-extrabold mb-4 bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 bg-clip-text text-transparent tracking-tight transition-all duration-300 group-hover:opacity-80 group-active:scale-95">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold mb-4 bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 bg-clip-text text-transparent tracking-tight transition-all duration-300 group-hover:opacity-80 group-active:scale-95">
             Giphy Explorer
           </h1>
         </Link>
-        <p className="text-zinc-400 text-lg mb-8 max-w-xl mx-auto">
+        <p className="text-zinc-400 text-sm sm:text-base md:text-lg mb-8 max-w-xl mx-auto">
           Explore the world of GIFs with high-performance search and instant streaming.
         </p>
         <SearchBar />
@@ -56,7 +56,7 @@ export default async function Home({
           </div>
         ) : (
           <div className="space-y-8">
-            <h2 className="text-2xl font-bold px-4 text-zinc-100 flex items-center gap-2">
+            <h2 className="text-lg sm:text-xl md:text-2xl font-bold px-0 md:px-4 text-zinc-100 flex items-center gap-2">
               <span className="w-2 h-8 bg-purple-600 rounded-full" />
               {query ? `Search Results for "${query}"` : "Trending Now"}
             </h2>
@@ -65,7 +65,7 @@ export default async function Home({
         )}
       </main>
       
-      <footer className="mt-32 py-12 border-t border-zinc-800 text-center text-zinc-500 text-sm">
+      <footer className="mt-20 md:mt-32 py-12 border-t border-zinc-800 text-center text-zinc-500 text-xs md:text-sm">
         <p>© {new Date().getFullYear()} Giphy Explorer. Powered by Giphy API.</p>
       </footer>
     </div>

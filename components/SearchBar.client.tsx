@@ -14,13 +14,8 @@ const TAGS = [
   { id: "happy", label: "😊 Happy", value: "happy" },
   { id: "coding", label: "💻 Coding", value: "coding" },
   { id: "cats", label: "🐱 Cats", value: "cats" },
-  { id: "music", label: "🎵 Music", value: "music" },
-  { id: "nature", label: "🌲 Nature", value: "nature" },
   { id: "anime", label: "🎌 Anime", value: "anime" },
-  { id: "sports", label: "⚽ Sports", value: "sports" },
   { id: "gaming", label: "🎮 Gaming", value: "gaming" },
-  { id: "movies", label: "🍿 Movies", value: "movies" },
-  { id: "food", label: "🍕 Food", value: "food" },
   { id: "travel", label: "✈️ Travel", value: "travel" },
   { id: "art", label: "🎨 Art", value: "art" },
   { id: "science", label: "🔬 Science", value: "science" },
@@ -52,7 +47,7 @@ export const SearchBar = () => {
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto mb-16 space-y-6">
+    <div className="w-full max-w-4xl mx-auto mb-10 md:mb-16 space-y-4 md:space-y-6">
       <SearchInput 
         value={query}
         onChange={setQuery}
@@ -60,7 +55,7 @@ export const SearchBar = () => {
         placeholder="Search for GIFs..."
       />
 
-      <div className="flex flex-wrap items-center justify-center gap-3 px-4">
+      <div className="flex flex-wrap items-center justify-center gap-2 md:gap-3 px-2 md:px-4">
         {TAGS.map((tag) => (
           <Tag
             key={tag.id}
