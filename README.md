@@ -67,7 +67,7 @@ A modern, high-performance GIF search and discovery application built with Next.
 
 5. **Open your browser**
    
-   Navigate to [http://localhost:3000](http://localhost:3000)
+   Navigate to [https://tgh-giphy.vercel.app](https://tgh-giphy.vercel.app)
 
 ## 📁 Project Structure
 
