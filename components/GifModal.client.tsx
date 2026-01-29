@@ -14,7 +14,6 @@ interface GifModalProps {
 
 const GifModalComponent = ({ gif, isLoading, onClose }: GifModalProps) => {
   const [imgLoading, setImgLoading] = useState(true);
-  console.log(isLoading && imgLoading || !gif,"Gif loading state");
 
   return (
     <Modal isOpen={!!(gif || isLoading)} onClose={onClose}>

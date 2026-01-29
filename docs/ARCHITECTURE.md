@@ -530,12 +530,6 @@ export default async function Page() {
 
 ### Debugging
 
-**Console Logging**:
-```typescript
-console.log("Fetching gif", activeGifId);
-console.error("Failed to fetch:", error);
-```
-
 **React DevTools**:
 - Inspect component props
 - View state changes

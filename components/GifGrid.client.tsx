@@ -46,7 +46,6 @@ export const GifGridClient = ({ initialGifs, query }: GifGridProps) => {
 
     // 2. Fetch if not found (Fallback for deep links/refresh)
     const fetchGif = async () => {
-      console.log("Fetching gif", activeGifId);
       setIsDataLoading(true);
       try {
         const res = await fetch(`/api/gifs/${activeGifId}`);
