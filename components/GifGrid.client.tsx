@@ -34,6 +34,7 @@ export const GifGridClient = ({ initialGifs, query }: GifGridProps) => {
   const [isDataLoading, setIsDataLoading] = useState(false);
   
   const loaderRef = useRef<HTMLDivElement>(null);
+  const isFetchingRef = useRef(false);
 
   // Get current active GIF ID from URL
   const activeGifId = searchParams.get("gif");
@@ -90,8 +91,9 @@ export const GifGridClient = ({ initialGifs, query }: GifGridProps) => {
   }, [initialGifs]);
 
   const loadMore = useCallback(async () => {
-    if (isLoading || !hasMore) return;
+    if (isLoading || !hasMore || isFetchingRef.current) return;
 
+    isFetchingRef.current = true;
     setIsLoading(true);
     try {
       const url = new URL("/api/gifs", window.location.origin);
@@ -111,6 +113,7 @@ export const GifGridClient = ({ initialGifs, query }: GifGridProps) => {
       console.error("Error loading more gifs:", error);
     } finally {
       setIsLoading(false);
+      isFetchingRef.current = false;
     }
   }, [offset, query, isLoading, hasMore]);
 
