@@ -1,9 +1,9 @@
 "use client";
 
-import  { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import Image from "next/image";
-
-import { GifModal } from "./GifModal";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
+import { GifModal } from "./GifModal.client";
 
 interface Gif {
   id: string;
@@ -22,12 +22,65 @@ interface GifGridProps {
 }
 
 export const GifGridClient = ({ initialGifs, query }: GifGridProps) => {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  
   const [gifs, setGifs] = useState<Gif[]>(initialGifs);
   const [offset, setOffset] = useState(initialGifs.length);
   const [hasMore, setHasMore] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedGif, setSelectedGif] = useState<Gif | null>(null);
+  const [isDataLoading, setIsDataLoading] = useState(false);
+  
   const loaderRef = useRef<HTMLDivElement>(null);
+
+  // Get current active GIF ID from URL
+  const activeGifId = searchParams.get("gif");
+
+  // Sync selectedGif with URL ?gif=id
+  useEffect(() => {
+    if (!activeGifId) {
+      setSelectedGif(null);
+      return;
+    }
+
+    // 1. Check if we already have it in our local list (Instant)
+    const localGif = gifs.find((g: Gif) => g.id === activeGifId);
+    if (localGif) {
+      setSelectedGif(localGif);
+      return;
+    }
+
+    // 2. Fetch if not found (Fallback for deep links/refresh)
+    const fetchGif = async () => {
+      console.log("Fetching gif", activeGifId);
+      setIsDataLoading(true);
+      try {
+        const res = await fetch(`/api/gifs/${activeGifId}`);
+        if (res.ok) {
+          const fetchedGif = await res.json();
+          setSelectedGif(fetchedGif);
+        }
+      } catch (error) {
+        console.error("Failed to fetch shared gif:", error);
+      } finally {
+        setIsDataLoading(false);
+      }
+    };
+
+    fetchGif();
+  }, [activeGifId, gifs]);
+
+  const updateModalUrl = (id: string | null) => {
+    const params = new URLSearchParams(searchParams.toString());
+    if (id) {
+      params.set("gif", id);
+    } else {
+      params.delete("gif");
+    }
+    router.push(`${pathname}?${params.toString()}`, { scroll: false });
+  };
 
   // Reset state when query changes (since initialGifs will be new from server)
   useEffect(() => {
@@ -51,8 +104,8 @@ export const GifGridClient = ({ initialGifs, query }: GifGridProps) => {
       if (newGifs.length === 0) {
         setHasMore(false);
       } else {
-        setGifs((prev) => [...prev, ...newGifs]);
-        setOffset((prev) => prev + newGifs.length);
+        setGifs((prev: Gif[]) => [...prev, ...newGifs]);
+        setOffset((prev: number) => prev + newGifs.length);
       }
     } catch (error) {
       console.error("Error loading more gifs:", error);
@@ -91,9 +144,9 @@ export const GifGridClient = ({ initialGifs, query }: GifGridProps) => {
           <div key={`col-${colIndex}`} className="grid gap-4 h-fit">
             {column.map((gif, gifIndex) => (
               <div 
-                key={`${gif.id}-${gifIndex}`} 
+                key={`${gif.id}`} 
                 className="relative group rounded-xl overflow-hidden cursor-pointer bg-zinc-900 shadow-sm hover:shadow-xl transition-shadow duration-300"
-                onClick={() => setSelectedGif(gif)}
+                onClick={() => updateModalUrl(gif.id)}
               >
                 <Image
                   src={gif.url}
@@ -131,10 +184,11 @@ export const GifGridClient = ({ initialGifs, query }: GifGridProps) => {
         )}
       </div>
 
-      {selectedGif && (
+      {(selectedGif || isDataLoading) && (
         <GifModal 
           gif={selectedGif} 
-          onClose={() => setSelectedGif(null)} 
+          isLoading={isDataLoading}
+          onClose={() => updateModalUrl(null)} 
         />
       )}
     </div>

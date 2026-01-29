@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import { SearchBar } from "@/components/SearchBar.client";
 import { GifGridClient } from "@/components/GifGrid.client";
 import { giphyService } from "@/services/giphyService";
@@ -52,9 +54,11 @@ export default async function Home({
   return (
     <div className="min-h-screen p-8 max-w-7xl mx-auto">
       <header className="mb-12 text-center pt-8">
-        <h1 className="text-5xl font-extrabold mb-4 bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 bg-clip-text text-transparent tracking-tight">
-          Giphy Explorer
-        </h1>
+        <Link href="/" className="inline-block group">
+          <h1 className="text-5xl font-extrabold mb-4 bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 bg-clip-text text-transparent tracking-tight transition-all duration-300 group-hover:opacity-80 group-active:scale-95">
+            Giphy Explorer
+          </h1>
+        </Link>
         <p className="text-zinc-400 text-lg mb-8 max-w-xl mx-auto">
           Explore the world of GIFs with high-performance search and instant streaming.
         </p>

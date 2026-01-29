@@ -30,5 +30,18 @@ export const giphyService = {
       console.error("Error searching gifs:", error);
       throw error;
     }
-  }
+  },
+  /**
+   * Fetch a single GIF by ID
+   * @param id - GIF ID
+   */
+  getGifById: async (id: string) => {
+    try {
+      const result = await gf.gif(id);
+      return result.data;
+    } catch (error) {
+      console.error("Error fetching gif by id:", error);
+      throw error;
+    }
+  },
 };
