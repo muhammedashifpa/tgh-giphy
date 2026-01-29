@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { giphyService } from "@/services/giphyService";
+import { normalizeGifs } from "@/lib/gifUtils";
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
@@ -13,16 +14,7 @@ export async function GET(request: NextRequest) {
       : await giphyService.getTrendingGifs(limit, offset);
 
     // Normalize data for the client
-    const gifs = data.map((gif: any) => ({
-      id: gif.id,
-      url: gif.images.fixed_width.url,
-      highResUrl: gif.images.original.url, // High-res version for modal
-      title: gif.title,
-      user: {
-        name: gif.user?.display_name || gif.username || "Anonymous",
-        avatar: gif.user?.avatar_url
-      }
-    }));
+    const gifs = normalizeGifs(data);
 
     return NextResponse.json(gifs, {
       headers: {

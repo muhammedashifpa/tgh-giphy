@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { giphyService } from "@/services/giphyService";
+import { normalizeGif } from "@/lib/gifUtils";
 
 export async function GET(
   request: NextRequest,
@@ -11,16 +12,7 @@ export async function GET(
     const gif = await giphyService.getGifById(id);
 
     // Normalize data for the client
-    const normalizedGif = {
-      id: gif.id,
-      url: gif.images.fixed_width.url,
-      highResUrl: gif.images.original.url,
-      title: gif.title,
-      user: {
-        name: gif.user?.display_name || gif.username || "Anonymous",
-        avatar: gif.user?.avatar_url
-      }
-    };
+    const normalizedGif = normalizeGif(gif);
 
     return NextResponse.json(normalizedGif, {
       headers: {

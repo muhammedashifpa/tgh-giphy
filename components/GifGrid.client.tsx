@@ -4,17 +4,7 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import Image from "next/image";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { GifModal } from "./GifModal.client";
-
-interface Gif {
-  id: string;
-  url: string;
-  highResUrl: string;
-  title: string;
-  user: {
-    name: string;
-    avatar?: string;
-  };
-}
+import { Gif } from "@/types/gif";
 
 interface GifGridProps {
   initialGifs: Gif[];

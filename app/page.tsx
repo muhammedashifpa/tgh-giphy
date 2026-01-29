@@ -3,23 +3,11 @@ import Link from "next/link";
 import { SearchBar } from "@/components/SearchBar.client";
 import { GifGridClient } from "@/components/GifGrid.client";
 import { giphyService } from "@/services/giphyService";
-import { IGif } from "@giphy/js-types";
+import { normalizeGifs } from "@/lib/gifUtils";
+import { Gif } from "@/types/gif";
 
 // This sets the default revalidation time for the page (ISR: 30 minutes)
-// Note: In Next.js App Router, accessing searchParams will typically disable full route caching 
-// for that specific request, ensuring search results are fresh.
 export const revalidate = 1800;
-
-interface Gif {
-  id: string;
-  url: string;
-  highResUrl: string;
-  title: string;
-  user: {
-    name: string;
-    avatar?: string;
-  };
-}
 
 export default async function Home({
   searchParams,
@@ -36,16 +24,7 @@ export default async function Home({
       ? await giphyService.searchGifs(query, 20)
       : await giphyService.getTrendingGifs(20);
 
-    initialGifs = data.map((gif: IGif) => ({
-      id: gif.id as string,
-      url: gif.images.fixed_width.url,
-      highResUrl: gif.images.original.url,
-      title: gif.title,
-      user: {
-        name: gif.user?.display_name || gif.username || "Anonymous",
-        avatar: gif.user?.avatar_url
-      }
-    }));
+    initialGifs = normalizeGifs(data);
   } catch (err) {
     console.error("Server Fetch Error:", err);
     error = "Failed to load GIFs. Please check your API configuration.";
