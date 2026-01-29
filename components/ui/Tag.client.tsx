@@ -1,5 +1,6 @@
 "use client";
 
+import { memo } from "react";
 
 interface TagProps {
   label: string;
@@ -8,7 +9,7 @@ interface TagProps {
   className?: string;
 }
 
-export const Tag = ({
+const TagComponent = ({
   label,
   isActive,
   onClick,
@@ -27,3 +28,5 @@ export const Tag = ({
     </button>
   );
 };
+
+export const Tag = memo(TagComponent);

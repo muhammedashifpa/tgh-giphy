@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { memo } from "react";
 
 interface LoaderProps {
   size?: "sm" | "md" | "lg";
@@ -8,7 +8,7 @@ interface LoaderProps {
   className?: string;
 }
 
-export const Loader = ({ size = "md", text, className = "" }: LoaderProps) => {
+const LoaderComponent = ({ size = "md", text, className = "" }: LoaderProps) => {
   const sizeClasses = {
     sm: "h-6 w-6 border-2",
     md: "h-8 w-8 border-2",
@@ -26,3 +26,5 @@ export const Loader = ({ size = "md", text, className = "" }: LoaderProps) => {
     </div>
   );
 };
+
+export const Loader = memo(LoaderComponent);

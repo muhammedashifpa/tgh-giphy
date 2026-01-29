@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, memo } from "react";
 import Image from "next/image";
 import { Modal } from "./ui/Modal.client";
 import { Loader } from "./ui/Loader.client";
@@ -12,7 +12,7 @@ interface GifModalProps {
   onClose: () => void;
 }
 
-export const GifModal = ({ gif, isLoading, onClose }: GifModalProps) => {
+const GifModalComponent = ({ gif, isLoading, onClose }: GifModalProps) => {
   const [imgLoading, setImgLoading] = useState(true);
   console.log(isLoading && imgLoading || !gif,"Gif loading state");
 
@@ -97,3 +97,5 @@ export const GifModal = ({ gif, isLoading, onClose }: GifModalProps) => {
     </Modal>
   );
 };
+
+export const GifModal = memo(GifModalComponent);

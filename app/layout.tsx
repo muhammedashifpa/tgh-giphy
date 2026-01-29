@@ -24,6 +24,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <link rel="preconnect" href="https://media.giphy.com" />
+        <link rel="preconnect" href="https://media0.giphy.com" />
+        <link rel="preconnect" href="https://media1.giphy.com" />
+        <link rel="preconnect" href="https://media2.giphy.com" />
+        <link rel="preconnect" href="https://media3.giphy.com" />
+        <link rel="preconnect" href="https://media4.giphy.com" />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >

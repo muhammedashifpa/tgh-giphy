@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { memo } from "react";
 
 interface SearchInputProps {
   value: string;
@@ -10,7 +10,7 @@ interface SearchInputProps {
   className?: string;
 }
 
-export const SearchInput = ({
+const SearchInputComponent = ({
   value,
   onChange,
   onSubmit,
@@ -40,3 +40,5 @@ export const SearchInput = ({
     </form>
   );
 };
+
+export const SearchInput = memo(SearchInputComponent);
